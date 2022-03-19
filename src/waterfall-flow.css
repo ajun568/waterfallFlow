@@ -1,0 +1,20 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-gap: 0 10px;
+  grid-auto-flow: row dense;
+  grid-auto-rows: 1px;
+}
+.item {
+  width: 100%;
+  height: auto;
+  grid-row-start: auto;
+}
+.item img {
+  width: 100%;
+  height: auto;
+}
+.virtal-img {
+  display: inline-block;
+  background-color: #eee;
+}
