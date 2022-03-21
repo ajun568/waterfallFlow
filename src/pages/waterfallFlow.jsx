@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import data from './../data.json';
+import data from '../data.json';
 
 const WaterfallFlow = () => {
   const imgsRef = useRef(null);

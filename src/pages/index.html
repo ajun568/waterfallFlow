@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>waterfall</title>
+  <script src="./../data.json"></script>
+  <style>
+    body {
+      margin: 0;
+      min-width: 600px;
+    }
+
+    #waterfall {
+      margin: 16px auto;
+      position: relative;
+    }
+
+    .item {
+      width: 230px;
+      border-radius: 10px;
+      position: absolute;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+
+    #msg {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      height: 80px;
+      line-height: 80px;
+      color: #3d3d3d;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="waterfall"></div>
+  <p id="msg">正在加载中...</p>
+
+  <script>
+    (function () {
+      function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+      }
+
+      function getRandomHeight() {
+        return getRandomInt(200, 500) + 'px'
+      }
+
+      function getRandomColor() {
+        return "rgba(" + getRandomInt(0, 255) + ", " + getRandomInt(0, 255) + ", " + getRandomInt(0, 255) + ", " + getRandomInt(1, 10) / 10 + ")"
+      }
+
+      function createItem(src) {
+        var div = document.createElement('div')
+
+        // var img = document.createElement('img')
+        // img.src = src
+        // div.appendChild(img)
+
+        div.className = 'item'
+        div.style.background = getRandomColor()
+        div.style.height = getRandomHeight()
+
+        return div
+      }
+
+      function request(params) {
+        return new Promise(function (resolve, reject) {
+          axios({
+            url: 'http://127.0.0.1:3000/imgs',
+            params: params,
+          }).then(function (res) {
+            resolve(res.data)
+          })
+        })
+      }
+
+      function debounce(fn, delay) {
+        delay = delay || 100
+        var timer = null
+
+        return function () {
+          var args = Array.prototype.slice.apply(arguments)
+
+          if (timer) {
+            clearTimeout(timer)
+            timer = null
+          }
+
+          timer = setTimeout(function () {
+            fn.apply(this, args)
+          }, delay)
+        }
+      }
+
+      function getCols() {
+        // n * width + (n - 1) * gap <= bodyWidth - margin * 2
+        return ~~((document.body.offsetWidth - 32 + gap) / (width + gap))
+      }
+
+      function getMinIndex(array) {
+        var min = Math.min.apply(null, array)
+
+        return array.indexOf(min)
+      }
+
+      function setWaterFallRect() {
+        var wf = document.querySelector('#waterfall')
+        var max = Math.max.apply(null, heights)
+
+        wf.style.height = max + 'px'
+        wf.style.width = width * cols + (cols - 1) * gap + 'px'
+      }
+
+      function waterfall() {
+        cols = getCols()
+        var items = document.querySelector('#waterfall .item')
+
+        for (var i = loaded; i < items.length; i++) {
+          var item = items[i]
+          var height = item.offsetHeight
+
+          if (i < cols) {
+            item.style.top = 0
+            item.style.left = i * (width + gap) + 'px'
+            heights.push(height)
+          } else {
+            var minIndex = getMinIndex(heights)
+            var top = heights[minIndex] + gap
+
+            item.style.top = top + 'px'
+            item.style.left = minIndex * (width + gap) + 'px'
+            heights[minIndex] = top + height
+          }
+
+          loaded++
+        }
+
+        setWaterFallRect()
+      }
+
+      function init() {
+        if (isReq) return
+        isReq = true
+
+        request(params).then(function (res) {
+          var lists = res.lists
+          var frag = document.createDocumentFragment()
+
+          total = res.total
+          isReq = false
+          params.pageNo++
+
+          for (var i = 0; i < lists.length; i++) {
+            frag.appendChild(createItem(lists[i]))
+          }
+
+          document.querySelector('#waterfall').appendChild(frag)
+
+          waterfall()
+        })
+      }
+
+      function lazyLoad() {
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+        var documentHeight = document.documentElement.scrollHeight
+        var clientHeight = window.innerHeight
+
+        // documentHeight - scrollTop - clientHeight < 0.5 * clientHeight
+        if (documentHeight - scrollTop < 1.5 * clientHeight) {
+          if (loaded >= total) {
+            document.querySelector('#msg').innerText = '没有更多了'
+            window.removeEventListener('scroll', lazyLoad)
+            return
+          }
+
+          init()
+        }
+      }
+
+      function resize() {
+        if (document.body.offsetWidth < 600) return
+
+        loaded = 0
+        heights = []
+        waterfall()
+      }
+
+      var width = 230
+
+      var gap = 16
+
+      var loaded = 0
+
+      var cols = 0
+
+      var params = {
+        pageNo: 1,
+        pageSize: 20,
+      }
+
+      var total = 0
+
+      var heights = []
+
+      var isReq = false
+
+      init()
+
+      window.addEventListener('scroll', lazyLoad)
+
+      window.addEventListener('resize', debounce(resize, 50))
+    })()
+  </script>
+</body>
+
+</html>
