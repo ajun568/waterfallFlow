@@ -39,6 +39,69 @@
   <p id="msg">正在加载中...</p>
 
   <script>
+
+function imageDownload(src, name) {
+    src = src + "?t=" + new Date().getTime();
+    fetch(src).then((response) => {
+      response.blob().then((myBlob) => {
+        const href = URL.createObjectURL(myBlob);
+        let a = document.createElement("a");
+        a.href = href;
+        a.download = name;
+        a.click();
+      });
+    });
+  }
+function imageDownload (src, name) {
+  let canvas = document.createElement('canvas')
+  let img = document.createElement('img')
+  img.onload = () => {
+    canvas.width = img.width
+    canvas.height = img.height
+    let context = canvas.getContext('2d')
+    context.drawImage(img, 0, 0, img.width, img.height)
+    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height)
+    canvas.toBlob(blob => {
+      let link = document.createElement('a')
+      link.href = window.URL.createObjectURL(blob)
+      link.download = name // resource name
+      link.click()
+    })
+  }
+  img.setAttribute("crossOrigin", 'Anonymous')
+  img.src = src
+}
+
+    let arr = [];
+    for (let i = 0; i < 90; i ++) {
+      const nodes = document.getElementById(`slide-image-${i}`);
+      if (!nodes) continute;
+      const slideArr = nodes.getAttribute('srcset').split(',');
+      const url = slideArr[slideArr.length - 1].split('1024w')[0].trim();
+      arr.push({
+        url,
+        alt: nodes.getAttribute('alt'),
+      });
+      imageDownload(url, `slide-image-${i}`);
+      // let aLink = document.createElement('a');
+      // let event = document.createEvent('MouseEvents');
+      // event.initEvent('click', false, false);
+      // aLink.download = `slide-image-${i}`;
+      // aLink.href = url;
+      // aLink.dispatchEvent(event);
+    }
+
+    for (let i = 0; i < arr.length; i++) {
+      let item = arr[i];
+      downloadPicture(item.url, `slide-image-${i}`);
+      // let aLink = document.createElement('a');
+      // let event = document.createEvent('MouseEvents');
+      // event.initEvent('click', false, false);
+      // aLink.download = `slide-image-${i}`;
+      // aLink.href = item.url;
+      // aLink.dispatchEvent(event);
+    }
+
     (function () {
       function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min

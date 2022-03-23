@@ -25,7 +25,32 @@
   position: relative;
 }
 .ab-item {
-  width: 100px;
   position: absolute;
   background-color: #eee;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+}
+.ab-item img {
+  width: 100%;
+  height: auto;
+}
+.loading {
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(30,32,35,.78);
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+.loading:before {
+  content: " ";
+  display: block;
+  height: 150px;
+  background: linear-gradient(180deg, #fff 17.29%, hsla(0, 0%, 100%, 0));
+  transform: matrix(1, 0, 0, -1, 0, 0);
+  position: absolute;
+  top: -145px;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
 }
