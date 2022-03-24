@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BASE_URL } from './config';
 
 const pageSize = 100;
 const baseWidth = 150;
 const gap = 10;
-const baseUrl = process.env.REACT_APP_ENV === 'production' ? 'https://deeruby.delpast.com' : 'http://localhost:3010';
+const baseUrl = BASE_URL[process.env.REACT_APP_ENV];
 
 const WaterfallFlow = () => {
   const [list, setList] = useState([]); // 数据
