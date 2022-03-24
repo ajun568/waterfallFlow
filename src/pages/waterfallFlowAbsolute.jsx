@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const pageSize = 10;
+const pageSize = 100;
 const baseWidth = 150;
 const gap = 10;
 const baseUrl = 'http://localhost:3010';
@@ -82,8 +82,8 @@ const WaterfallFlowAbsolute = () => {
       return;
     }
 
-    setList(list => list.concat(data.data));
     setPageNum(page => page + 1);
+    setList(list => list.concat(data.data));
   }
 
   const getCols = () => { // n * itemWidth + (n + 1) * gap = bodyWidth
