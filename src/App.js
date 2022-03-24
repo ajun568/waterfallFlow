@@ -14,8 +14,8 @@ const App = () => {
 
   useEffect(() => {
     const query = window.location.href.split('?')[1];
-    const params = query.split('&');
-    const type = params.find(item => item.split('=')[0] === 'type');
+    const params = query && query.split('&');
+    const type = params && params.find(item => item.split('=')[0] === 'type');
     const typeVal = type ? type.split('=')[1] : undefined;
     if (type && ComponentMap[typeVal]) {
       setType(typeVal);

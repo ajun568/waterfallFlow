@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 const pageSize = 100;
 const baseWidth = 150;
 const gap = 10;
-const baseUrl = 'http://localhost:3010';
+const baseUrl = process.env.REACT_APP_ENV === 'production' ? 'https://deeruby.delpast.com' : 'http://localhost:3010';
 
 const WaterfallFlow = () => {
   const [list, setList] = useState([]); // 数据
