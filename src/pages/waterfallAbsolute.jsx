@@ -139,6 +139,7 @@ const WaterfallFlowAbsolute = () => {
         image.src = url;
         image.onload = function() {
           imageNode.src = url;
+          imageNode.alt = info.title;
         }
       }
     }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import WaterfallGrid from './pages/waterfallGrid';
 import WaterfallAbsolute from './pages/waterfallAbsolute';
+import WaterfallFlex from './pages/waterfallFlex';
 import './waterfall-flow.css';
 
 const ComponentMap = {
   'ABSOLUTE_VERTICAL': <WaterfallAbsolute />,
-  'GRID_VERTICAL': <WaterfallGrid />
+  'GRID_VERTICAL': <WaterfallGrid />,
+  'FLEX_HORIZONTAL': <WaterfallFlex />
 }
 const App = () => {
   const [type, setType] = useState('');
@@ -13,15 +15,18 @@ const App = () => {
   useEffect(() => {
     const query = window.location.href.split('?')[1];
     const params = query.split('&');
-    params.forEach(item => {
-      const arr = item.split('=');
-      if (arr[0] === 'type') setType(arr[1]);
-    })
+    const type = params.find(item => item.split('=')[0] === 'type');
+    const typeVal = type ? type.split('=')[1] : undefined;
+    if (type && ComponentMap[typeVal]) {
+      setType(typeVal);
+    } else {
+      setType('GRID_VERTICAL');
+    }
   }, [])
 
   return (
     <main>
-      { ComponentMap[type] || <WaterfallGrid /> }
+      { ComponentMap[type] }
     </main>
   );
 }

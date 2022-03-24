@@ -1,19 +1,25 @@
 /* Grip */
-.wrapper {
+.grid-container {
+  padding: 10px;
+}
+.grid-wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  grid-gap: 0 10px;
   grid-auto-flow: row dense;
   grid-auto-rows: 1px;
+  height: 100%;
 }
-.item {
+.grid-item {
   width: 100%;
   height: auto;
   grid-row-start: auto;
 }
-.item img {
+.grid-item img {
+  object-fit: cover;
   width: 100%;
   height: auto;
+  background-color: #eee;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
 }
 .virtal-img {
   display: inline-block;
@@ -54,4 +60,20 @@
   left: 0;
   width: 100%;
   pointer-events: none;
+}
+
+/* Flex */
+.flex-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+.flex-item {
+  flex-grow: 1;
+}
+.flex-item img {
+  object-fit: cover;
+  width: 100%;
+  background-color: #eee;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const pageSize = 100;
-const baseWidth = 150;
+const baseHeight = 200;
 const gap = 10;
 const baseUrl = 'http://localhost:3010';
 
@@ -50,9 +50,9 @@ const WaterfallFlow = () => {
     setList(list => list.concat(data.data));
   }
 
-  const getHeight = (width, height) => {
+  const getWidth = (width, height) => {
     const ratio = width / height;
-    return ~~(baseWidth / ratio);
+    return ~~(baseHeight * ratio);
   }
 
   const lazyLoad = (init) => {
@@ -84,37 +84,27 @@ const WaterfallFlow = () => {
   }
 
   return (
-    <section className="grid-container">
-      <div
-        className="grid-wrapper"
-        style={{
-          gridTemplateColumns: `repeat(auto-fit, minmax(${baseWidth}px, 1fr))`,
-          gridGap: `0 ${gap}px`,
-        }}
-      >
+    <section style={{padding: `${gap / 2}px`}}>
+      <div className="flex-wrapper" >
       {
-        list.map(item => {
-          const height = getHeight(item.width, item.height);
-          return (
-            <div
-              key={item.id}
-              ref={r => { itemRefs.current[item.id] = r }}
-              className="grid-item"
-              style={{
-                height: `${height}px`,
-                gridRowEnd: `span ${height + gap}`
-              }}
-            >
-              <img
-                data-src={item.image_url}
-                alt=""
-                style={{
-                  height: `${height}px`,
-                }}
-              />
-            </div>
-          )
-        })
+        list.map(item => (
+          <div
+            key={item.id}
+            ref={r => { itemRefs.current[item.id] = r }}
+            className="flex-item"
+            style={{
+              width: `${getWidth(item.width, item.height)}px`,
+              height: `${baseHeight}px`,
+              margin: `${gap / 2}px`
+            }}
+          >
+            <img
+              data-src={item.image_url}
+              alt=""
+              style={{height: `${baseHeight}px`}}
+            />
+          </div>
+        ))
       }
       </div>
       { loading && <div className="loading">Loading...</div> }
