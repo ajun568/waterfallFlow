@@ -35,6 +35,7 @@
   height: auto;
 }
 .loading {
+  width: 100%;
   font-size: 14px;
   line-height: 20px;
   color: rgba(30,32,35,.78);

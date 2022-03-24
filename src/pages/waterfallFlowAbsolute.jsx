@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const pageSize = 100;
+const pageSize = 10;
 const baseWidth = 150;
 const gap = 10;
 const baseUrl = 'http://localhost:3010';
@@ -19,9 +19,11 @@ const WaterfallFlowAbsolute = () => {
 
   useEffect(() => {
     window.addEventListener('scroll', lazyLoad);
+    window.addEventListener('resize', debounce(resize, 500));
 
     return () => {
       window.removeEventListener('scroll', lazyLoad);
+      window.removeEventListener('resize', debounce(resize, 500));
     };
   })
 
@@ -59,7 +61,7 @@ const WaterfallFlowAbsolute = () => {
         remainWidth = rw;
       }
     }
-    
+
     setItemWidth(remainWidth + baseWidth);
   }
 
@@ -103,9 +105,9 @@ const WaterfallFlowAbsolute = () => {
       const height = itemNode.offsetHeight;
 
       if (i < cols) {
-        itemNode.style.top = 0;
+        itemNode.style.top = `${gap}px`;;
         itemNode.style.left = `${gap + i * (itemWidth + gap)}px`;
-        heights.push(height);
+        heights.push(height + gap);
       } else {
         const min = Math.min(...heights);
         const minIndex = heights.indexOf(min);
@@ -141,11 +143,23 @@ const WaterfallFlowAbsolute = () => {
       }
     }
 
-    if (Math.max(...heightsArr) - scrollTop < winHeight + 10) { // 1.5 * 
+    if (Math.max(...heightsArr) - scrollTop < 1.5 * winHeight + 10) { 
       getList();
     }
 
     setLoaded(flag);
+  }
+
+  const debounce = (fn, delay = 0) => {
+    let timer = null;
+    return function() {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => { fn() }, delay);
+    }
+  }
+
+  const resize = () => {
+    window.location.reload();
   }
 
   return (
