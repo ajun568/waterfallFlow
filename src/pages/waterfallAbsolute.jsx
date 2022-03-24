@@ -143,7 +143,7 @@ const WaterfallFlowAbsolute = () => {
       }
     }
 
-    if (Math.max(...heightsArr) - scrollTop < 1.5 * winHeight + 10) { 
+    if (Math.max(...heightsArr) - scrollTop < 1.5 * winHeight) { 
       getList();
     }
 
@@ -159,6 +159,7 @@ const WaterfallFlowAbsolute = () => {
   }
 
   const resize = () => {
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
     window.location.reload();
   }
 
