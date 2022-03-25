@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BASE_URL } from './config';
 
 const pageSize = 100;
-const baseWidth = 150;
+const baseWidth = 250;
 const gap = 10;
 const baseUrl = BASE_URL[process.env.REACT_APP_ENV];
 

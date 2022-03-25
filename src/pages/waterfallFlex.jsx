@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { BASE_URL } from './config';
 
 const pageSize = 100;
-const baseHeight = 200;
 const gap = 10;
 const baseUrl = BASE_URL[process.env.REACT_APP_ENV];
 
-const WaterfallFlow = () => {
+const WaterfallFlow = ({baseHeight = 200}) => {
   const [list, setList] = useState([]); // 数据
   const [pageNum, setPageNum] = useState(0); // 页数
   const [loading, setLoading] = useState(false); // Loading

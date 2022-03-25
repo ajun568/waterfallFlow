@@ -5,9 +5,10 @@ import WaterfallFlex from './pages/waterfallFlex';
 import './waterfall-flow.css';
 
 const ComponentMap = {
-  'ABSOLUTE_VERTICAL': <WaterfallAbsolute />,
-  'GRID_VERTICAL': <WaterfallGrid />,
-  'FLEX_HORIZONTAL': <WaterfallFlex />
+  'VERTICAL': <WaterfallAbsolute />,
+  'PC_VERTICAL': <WaterfallGrid />,
+  'HORIZONTAL': <WaterfallFlex baseHeight={100} />,
+  'PC_HORIZONTAL': <WaterfallFlex />
 }
 const App = () => {
   const [type, setType] = useState('');
@@ -15,12 +16,14 @@ const App = () => {
   useEffect(() => {
     const query = window.location.href.split('?')[1];
     const params = query && query.split('&');
-    const type = params && params.find(item => item.split('=')[0] === 'type');
-    const typeVal = type ? type.split('=')[1] : undefined;
-    if (type && ComponentMap[typeVal]) {
-      setType(typeVal);
+    const typeArr = params && params.find(item => item.split('=')[0] === 'type');
+    const typeVal = typeArr ? typeArr.split('=')[1] : undefined;
+    const realType = ['HORIZONTAL', 'VERTICAL'].includes(typeVal) ? typeVal : 'VERTICAL';
+    
+    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+      setType(realType);
     } else {
-      setType('GRID_VERTICAL');
+      setType(`PC_${realType}`);
     }
   }, [])
 
