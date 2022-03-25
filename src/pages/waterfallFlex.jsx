@@ -8,17 +8,19 @@ const baseUrl = BASE_URL[process.env.REACT_APP_ENV];
 
 const WaterfallFlow = () => {
   const [list, setList] = useState([]); // 数据
-  const [loaded, setLoaded] = useState(0); // 已加载数量
   const [pageNum, setPageNum] = useState(0); // 页数
   const [loading, setLoading] = useState(false); // Loading
   const [finish, setFinish] = useState(false); // 加载情况
+  const loaded = useRef(0); // 已加载数量
   const itemRefs = useRef({});
 
   useEffect(() => {
     window.addEventListener('scroll', lazyLoad);
+    window.addEventListener('resize', debounce(lazyLoad, 500));
 
     return () => {
       window.removeEventListener('scroll', lazyLoad);
+      window.addEventListener('resize', debounce(lazyLoad, 500));
     };
   })
 
@@ -59,21 +61,20 @@ const WaterfallFlow = () => {
   const lazyLoad = (init) => {
     const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
     const winHeight = window.innerHeight;
-    let flag = loaded;
+    let flag = loaded.current;
 
-    for (let i = loaded; i < list.length; i++) {
+    for (let i = loaded.current; i < list.length; i++) {
       const info = list[i];
       const itemNode = itemRefs.current[info.id];
       if (itemNode.offsetTop < scrollTop + winHeight) {
         flag = i;
         const imageNode = itemNode.childNodes[0];
+        if (imageNode.getAttribute('loaded') === 'true') continue;
+
+        imageNode.setAttribute('loaded', true);
         const url = imageNode.getAttribute('data-src');
-        const image = new Image();
-        image.src = url;
-        image.onload = function() {
-          imageNode.src = url;
-          imageNode.alt = info.title;
-        }
+        imageNode.src = url;
+        imageNode.alt = info.title;
       }
     }
 
@@ -81,7 +82,21 @@ const WaterfallFlow = () => {
       getList();
     }
 
-    setLoaded(flag);
+    loaded.current = flag;
+  }
+
+  const dealErrImage = (e) => {
+    e.target.setAttribute('loaded', false);
+    e.target.alt = '';
+    e.target.removeAttribute('src');
+  }
+
+  const debounce = (fn, delay = 0) => {
+    let timer = null;
+    return function() {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => { fn() }, delay);
+    }
   }
 
   return (
@@ -103,6 +118,7 @@ const WaterfallFlow = () => {
               data-src={item.image_url}
               alt=""
               style={{height: `${baseHeight}px`}}
+              onError={dealErrImage}
             />
           </div>
         ))

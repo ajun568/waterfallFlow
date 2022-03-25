@@ -10,11 +10,11 @@ const WaterfallFlowAbsolute = () => {
   const [itemWidth, setItemWidth] = useState(baseWidth); // item宽度
   const [list, setList] = useState([]); // 数据
   const [renderDom, setRenderDom] = useState(0); // 已生成的dom数量
-  const [loaded, setLoaded] = useState(0); // 已加载数量
   const [heightsArr, setHeightsArr] = useState([]); // 列高数组
   const [pageNum, setPageNum] = useState(0); // 页数
   const [loading, setLoading] = useState(false); // Loading
   const [finish, setFinish] = useState(false); // 加载情况
+  const loaded = useRef(0); // 已加载数量
   const wrapperRef = useRef(null);
   const itemRefs = useRef({});
 
@@ -127,21 +127,20 @@ const WaterfallFlowAbsolute = () => {
   const lazyLoad = () => {
     const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
     const winHeight = window.innerHeight;
-    let flag = loaded;
+    let flag = loaded.current;
     
-    for (let i = loaded; i < list.length; i++) {
+    for (let i = loaded.current; i < list.length; i++) {
       const info = list[i];
       const itemNode = itemRefs.current[info.id];
       if (itemNode.offsetTop < scrollTop + winHeight) {
         flag = i;
         const imageNode = itemNode.childNodes[0];
+        if (imageNode.getAttribute('loaded') === 'true') continue;
+
+        imageNode.setAttribute('loaded', true);
         const url = imageNode.getAttribute('data-src');
-        const image = new Image();
-        image.src = url;
-        image.onload = function() {
-          imageNode.src = url;
-          imageNode.alt = info.title;
-        }
+        imageNode.src = url;
+        imageNode.alt = info.title;
       }
     }
 
@@ -149,7 +148,13 @@ const WaterfallFlowAbsolute = () => {
       getList();
     }
 
-    setLoaded(flag);
+    loaded.current = flag;
+  }
+
+  const dealErrImage = (e) => {
+    e.target.setAttribute('loaded', false);
+    e.target.alt = '';
+    e.target.removeAttribute('src');
   }
 
   const debounce = (fn, delay = 0) => {
@@ -179,7 +184,11 @@ const WaterfallFlowAbsolute = () => {
             className="ab-item"
             style={{height: `${getHeight(item.width, item.height)}px`, width: `${itemWidth}px`}}
           >
-            <img data-src={item.image_url} alt="" />
+            <img
+              data-src={item.image_url}
+              alt=""
+              onError={dealErrImage}
+            />
           </div>
         )
       }
