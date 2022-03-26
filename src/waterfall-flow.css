@@ -35,6 +35,7 @@
   background-color: #eee;
   box-sizing: border-box;
   border: 1px solid #ccc;
+  overflow: hidden;
 }
 .ab-item img {
   width: 100%;
@@ -69,6 +70,7 @@
 }
 .flex-item {
   flex-grow: 1;
+  overflow: hidden;
 }
 .flex-item img {
   object-fit: cover;
