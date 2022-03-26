@@ -20,11 +20,11 @@ const WaterfallFlowAbsolute = () => {
 
   useEffect(() => {
     window.addEventListener('scroll', lazyLoad);
-    window.addEventListener('resize', debounce(resize, 500));
+    // window.addEventListener('resize', debounce(resize, 500));
 
     return () => {
       window.removeEventListener('scroll', lazyLoad);
-      window.removeEventListener('resize', debounce(resize, 500));
+      // window.removeEventListener('resize', debounce(resize, 500));
     };
   })
 
