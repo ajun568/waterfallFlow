@@ -19,8 +19,14 @@ const App = () => {
     const params = query && query.split('&');
     const typeArr = params && params.find(item => item.split('=')[0] === 'type');
     const typeVal = typeArr ? typeArr.split('=')[1] : undefined;
+
+    // 用来测试 Github Action
+    if (typeVal === 'TEST_GITHUB_ACTION') {
+      setType(typeVal);
+      return;
+    };
+
     const realType = ['HORIZONTAL', 'VERTICAL'].includes(typeVal) ? typeVal : 'VERTICAL';
-    
     if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
       setType(realType);
     } else {
