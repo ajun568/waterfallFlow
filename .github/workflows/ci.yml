@@ -1,4 +1,4 @@
-name: Build USFARM_plc-monitor image
+name: Build waterfallFlow image
 on:
   push:
     branches:
@@ -19,3 +19,4 @@ jobs:
             rm -rf node_modules
             git pull
             npm install
+            npm run build

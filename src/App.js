@@ -8,7 +8,8 @@ const ComponentMap = {
   'VERTICAL': <WaterfallAbsolute />,
   'PC_VERTICAL': <WaterfallGrid />,
   'HORIZONTAL': <WaterfallFlex baseHeight={100} />,
-  'PC_HORIZONTAL': <WaterfallFlex />
+  'PC_HORIZONTAL': <WaterfallFlex />,
+  'TEST_GITHUB_ACTION': <div>测试 Github Action 构建 no.1</div>
 }
 const App = () => {
   const [type, setType] = useState('');
