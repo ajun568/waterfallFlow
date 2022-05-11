@@ -19,4 +19,4 @@ jobs:
             rm -rf node_modules
             git pull
             npm install
-            npm run build
+            REACT_APP_ENV=deeruby npm run build
