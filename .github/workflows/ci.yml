@@ -1,0 +1,21 @@
+name: Build USFARM_plc-monitor image
+on:
+  push:
+    branches:
+      - master
+jobs:
+  upload:
+    name: upload code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to aliyun server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.DEPLOY_HOST}}
+          key: ${{secrets.DEPLOY_SECRET}}
+          username: ${{secrets.DEPLOY_USER}}
+          script: | 
+            cd /home/waterfallFlow/waterfallFlow
+            rm -rf node_modules
+            git pull
+            npm install
